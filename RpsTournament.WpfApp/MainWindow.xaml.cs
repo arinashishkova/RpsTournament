@@ -76,25 +76,20 @@ namespace RpsTournament.WpfApp
 
         private void UpdateScore()
         {
-            int wins = 0;
-            int losses = 0;
-            int draws = 0;
+            int wins = GameLogic.CountResults(
+                rounds,
+                roundCount,
+                RoundResult.Win);
 
-            for (int i = 0; i < roundCount; i++)
-            {
-                if (rounds[i].Result == RoundResult.Win)
-                {
-                    wins++;
-                }
-                else if (rounds[i].Result == RoundResult.Loss)
-                {
-                    losses++;
-                }
-                else if (rounds[i].Result == RoundResult.Draw)
-                {
-                    draws++;
-                }
-            }
+            int losses = GameLogic.CountResults(
+                rounds,
+                roundCount,
+                RoundResult.Loss);
+
+            int draws = GameLogic.CountResults(
+                rounds,
+                roundCount,
+                RoundResult.Draw);
 
             ScoreTextBlock.Text =
                 $"Võidud: {wins} | Kaotused: {losses} | Viigid: {draws}";
@@ -102,22 +97,10 @@ namespace RpsTournament.WpfApp
 
         private void ShowTournamentResult(string playerName)
         {
-            int wins = 0;
-            int losses = 0;
+            RoundResult tournamentResult =
+                GameLogic.GetTournamentResult(rounds, roundCount);
 
-            for (int i = 0; i < roundCount; i++)
-            {
-                if (rounds[i].Result == RoundResult.Win)
-                {
-                    wins++;
-                }
-                else if (rounds[i].Result == RoundResult.Loss)
-                {
-                    losses++;
-                }
-            }
-
-            if (wins > losses)
+            if (tournamentResult == RoundResult.Win)
             {
                 string message = string.Format(
                     Properties.Resources.PlayerWonMessage,
@@ -125,13 +108,15 @@ namespace RpsTournament.WpfApp
 
                 MessageBox.Show(message);
             }
-            else if (losses > wins)
+            else if (tournamentResult == RoundResult.Loss)
             {
-                MessageBox.Show(Properties.Resources.ComputerWonMessage);
+                MessageBox.Show(
+                    Properties.Resources.ComputerWonMessage);
             }
             else
             {
-                MessageBox.Show(Properties.Resources.TournamentDrawMessage);
+                MessageBox.Show(
+                    Properties.Resources.TournamentDrawMessage);
             }
         }
 
